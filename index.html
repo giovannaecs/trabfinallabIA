@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA · Monitoramento de Arritmias | Giovanna Silva</title>
+
+    <!-- Google Fonts (Elegante & Sério) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome (Ícones) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- highlight.js (para preview dos códigos com cores) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/stackoverflow-light.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+
+    <style>
+        /* ===== RESET E BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fcf8f9; /* Rosa muito claro */
+            color: #2d2a2e;
+            line-height: 1.7;
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 25px;
+        }
+
+        /* ===== NAVEGAÇÃO ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(253, 248, 250, 0.92);
+            backdrop-filter: blur(8px);
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(154, 77, 111, 0.15);
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(154, 77, 111, 0.05);
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #7a4a5f;
+            letter-spacing: -0.3px;
+        }
+        .logo i {
+            color: #b57c9c;
+            margin-right: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            list-style: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #4a3b42;
+            transition: color 0.2s;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 4px;
+        }
+        .nav-links a:hover {
+            color: #9a4d6f;
+            border-bottom-color: #c78a9e;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            padding: 140px 0 70px 0;
+            background: linear-gradient(135deg, #fdf8fa 0%, #f4e9ee 100%);
+            border-bottom: 1px solid rgba(154, 77, 111, 0.1);
+            margin-top: 0;
+        }
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #3d2c36;
+            line-height: 1.2;
+            max-width: 800px;
+            margin-bottom: 15px;
+        }
+        .hero h1 i {
+            color: #b57c9c;
+            font-style: normal;
+        }
+        .hero .subtitle {
+            font-size: 1.2rem;
+            color: #6b5563;
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+        .hero .author {
+            font-weight: 500;
+            color: #9a4d6f;
+            font-size: 1.1rem;
+            letter-spacing: 0.3px;
+        }
+        .hero .author span {
+            color: #6b5563;
+            font-weight: 400;
+        }
+        .hero .badge {
+            display: inline-block;
+            margin-top: 20px;
+            background: #9a4d6f;
+            color: white;
+            padding: 8px 24px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== SEÇÕES GERAIS ===== */
+        section {
+            padding: 70px 0;
+            border-bottom: 1px solid #f0e6ea;
+        }
+        section:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #3d2c36;
+            margin-bottom: 16px;
+        }
+        .section-title i {
+            color: #b57c9c;
+            margin-right: 12px;
+            font-size: 1.8rem;
+        }
+        .section-sub {
+            color: #7a6a72;
+            font-weight: 400;
+            margin-bottom: 35px;
+            font-size: 1.05rem;
+            border-left: 4px solid #d4a5c4;
+            padding-left: 20px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .card-elegant {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 28px 25px;
+            box-shadow: 0 8px 30px rgba(154, 77, 111, 0.07);
+            border: 1px solid rgba(212, 165, 196, 0.25);
+            transition: transform 0.2s;
+        }
+        .card-elegant:hover {
+            transform: translateY(-4px);
+        }
+        .card-elegant h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: #3d2c36;
+            margin-bottom: 12px;
+        }
+        .card-elegant h3 i {
+            color: #b57c9c;
+            margin-right: 8px;
+        }
+        .card-elegant p, .card-elegant li {
+            font-size: 0.95rem;
+            color: #4a3b42;
+        }
+        .card-elegant ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .card-elegant ul li {
+            padding: 4px 0;
+            padding-left: 22px;
+            position: relative;
+        }
+        .card-elegant ul li::before {
+            content: "✦";
+            color: #b57c9c;
+            position: absolute;
+            left: 0;
+            font-size: 0.8rem;
+        }
+
+        /* ===== TABELAS ===== */
+        .table-responsive {
+            overflow-x: auto;
+            margin: 25px 0;
+            border-radius: 12px;
+            border: 1px solid #f0e6ea;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            background: white;
+        }
+        th {
+            background: #f4e9ee;
+            color: #3d2c36;
+            font-weight: 600;
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 2px solid #d4a5c4;
+        }
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0e6ea;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover {
+            background: #fcf8f9;
+        }
+        .highlight-row {
+            background: #fcf4f7;
+            font-weight: 600;
+        }
+        .highlight-row td {
+            color: #9a4d6f;
+        }
+
+        .metric-badge {
+            background: #e8d7df;
+            color: #5a3b4a;
+            border-radius: 30px;
+            padding: 2px 14px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        /* ===== CÓDIGO (PREVIEW COLAB) ===== */
+        .code-section {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #f0e6ea;
+            overflow: hidden;
+            margin: 30px 0;
+            box-shadow: 0 8px 30px rgba(154, 77, 111, 0.06);
+        }
+        .code-header {
+            background: #fcf8f9;
+            padding: 14px 24px;
+            border-bottom: 1px solid #f0e6ea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .code-header .title {
+            font-weight: 600;
+            color: #3d2c36;
+            font-size: 1rem;
+        }
+        .code-header .title i {
+            color: #b57c9c;
+            margin-right: 10px;
+        }
+        .code-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .code-actions button, .code-actions a {
+            background: transparent;
+            border: 1px solid #d4a5c4;
+            padding: 5px 14px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #5a3b4a;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .code-actions button:hover, .code-actions a:hover {
+            background: #9a4d6f;
+            border-color: #9a4d6f;
+            color: white;
+        }
+        .code-actions a i, .code-actions button i {
+            font-size: 0.8rem;
+        }
+
+        .code-body {
+            padding: 20px 24px;
+            background: #fcf8fa;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .code-body pre {
+            margin: 0;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.8rem;
+            line-height: 1.6;
+        }
+        .code-body code {
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        /* Estilo para o highlight.js */
+        .hljs {
+            background: transparent !important;
+        }
+
+        /* ===== FASE 3 (Slides/Conclusões) ===== */
+        .conclusion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+        .conclusion-item {
+            background: #fcf8f9;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #b57c9c;
+        }
+        .conclusion-item strong {
+            color: #9a4d6f;
+            display: block;
+            font-size: 1rem;
+        }
+        .conclusion-item p {
+            font-size: 0.9rem;
+            margin-top: 6px;
+            color: #4a3b42;
+        }
+
+        .ethics-box {
+            background: #fcf4f7;
+            border-radius: 12px;
+            padding: 25px 30px;
+            border: 1px solid #e8d7df;
+            margin: 20px 0;
+        }
+        .ethics-box h4 {
+            color: #9a4d6f;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: #f4e9ee;
+            padding: 30px 0;
+            text-align: center;
+            color: #6b5563;
+            font-size: 0.9rem;
+            border-top: 1px solid #e8d7df;
+            margin-top: 20px;
+        }
+        .footer i {
+            color: #b57c9c;
+        }
+
+        /* ===== RESPONSIVO ===== */
+        @media (max-width: 768px) {
+            .navbar .container {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .nav-links {
+                gap: 18px;
+                flex-wrap: wrap;
+                justify-content: center;
+                font-size: 0.8rem;
+            }
+            .hero {
+                padding: 130px 0 50px 0;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            .code-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .code-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            .conclusion-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .conclusion-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scroll suave e animação */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f4e9ee;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c78a9e;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i> IA · Cardio
+            </div>
+            <ul class="nav-links">
+                <li><a href="#fase1">Fase 1</a></li>
+                <li><a href="#fase2">Fase 2</a></li>
+                <li><a href="#fase3">Fase 3</a></li>
+                <li><a href="#codigos">Códigos</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <header class="hero">
+        <div class="container">
+            <p class="subtitle"><i class="fas fa-microchip" style="color:#b57c9c; margin-right:6px;"></i> Inteligência Artificial Aplicada à Saúde Cardiovascular</p>
+            <h1>Monitoramento de Arritmias por <i>Smartwatches</i> para Apoio ao Retorno Seguro ao Exercício</h1>
+            <p class="author">Giovanna Silva <span>· Orientador: Prof. Everthon de Souza Oliveira</span></p>
+            <p style="color: #6b5563; margin-top: 8px; font-size: 0.95rem;">CEFET-MG · Departamento de Engenharia Elétrica</p>
+            <div class="badge"><i class="fas fa-graduation-cap"></i> Trabalho Acadêmico · Fases 1, 2 e 3</div>
+        </div>
+    </header>
+
+    <!-- ===== CONTEÚDO PRINCIPAL ===== -->
+    <main class="container">
+
+        <!-- ============================= -->
+        <!-- SEÇÃO: FASE 1                -->
+        <!-- ============================= -->
+        <section id="fase1">
+            <h2 class="section-title"><i class="fas fa-flask"></i> Fase 1 · Estudo Preliminar</h2>
+            <div class="section-sub">Proposta inicial, hipótese e primeiros resultados com Random Forest.</div>
+
+            <div class="card-grid">
+                <div class="card-elegant">
+                    <h3><i class="fas fa-bullseye"></i> Problema & Motivação</h3>
+                    <p>Doenças cardiovasculares são a principal causa de morte no Brasil. A fibrilação atrial (FA) eleva o risco de AVC, mas o monitoramento contínuo ainda é restrito a ambientes hospitalares.</p>
+                </div>
+                <div class="card-elegant">
+                    <h3><i class="fas fa-database"></i> Base de Dados</h3>
+                    <p><strong>MIT-BIH</strong> (48 registros, 360 Hz) e <strong>PTB-XL</strong> para validação externa. Extração de atributos: intervalo RR, variabilidade, RMSSD e taxa de variação.</p>
+                </div>
+                <div class="card-elegant">
+                    <h3><i class="fas fa-robot"></i> Modelo Inicial</h3>
+                    <p><strong>Random Forest</strong> com 100 árvores. Balanceamento via SMOTE. Resultados preliminares (validação): <br>
+                    <span class="metric-badge">Acurácia 88,5%</span> <span class="metric-badge">Sensibilidade 82,3%</span> <span class="metric-badge">F1-score 0,874</span></p>
+                </div>
+            </div>
+
+            <div style="background: #fcf8f9; padding: 20px 25px; border-radius: 12px; border: 1px solid #f0e6ea; margin-top: 10px;">
+                <p style="font-style: italic; color: #5a3b4a; margin:0;">
+                    <i class="fas fa-quote-left" style="color:#b57c9c; margin-right:6px;"></i> 
+                    A análise de importância revelou que a <strong>variabilidade RR (35%)</strong> e o <strong>intervalo RR médio (28%)</strong> são os atributos mais relevantes, consistente com a fisiopatologia da fibrilação atrial.
+                </p>
+            </div>
+        </section>
+
+        <!-- ============================= -->
+        <!-- SEÇÃO: FASE 2                -->
+        <!-- ============================= -->
+        <section id="fase2">
+            <h2 class="section-title"><i class="fas fa-chart-line"></i> Fase 2 · Pipeline Completo & Comparação</h2>
+            <div class="section-sub">Implementação integral, comparação entre 3 modelos e validação externa.</div>
+
+            <div class="card-grid">
+                <div class="card-elegant">
+                    <h3><i class="fas fa-database"></i> Dataset Final</h3>
+                    <p>111.902 batimentos extraídos (103.972 normais, 7.930 arritmias). Aplicação de SMOTE para balanceamento (83.177 por classe).</p>
+                </div>
+                <div class="card-elegant">
+                    <h3><i class="fas fa-code-branch"></i> Modelos Comparados</h3>
+                    <ul>
+                        <li><strong>Random Forest</strong> (100 árvores)</li>
+                        <li><strong>Regressão Logística</strong> (baseline)</li>
+                        <li><strong>MLP</strong> (1 camada oculta, 100 neurônios)</li>
+                    </ul>
+                </div>
+                <div class="card-elegant">
+                    <h3><i class="fas fa-check-circle"></i> Métricas Chave</h3>
+                    <p>Acurácia, Precisão, Sensibilidade, Especificidade, F1-score e AUC-ROC. Validação cruzada 5-folds.</p>
+                </div>
+            </div>
+
+            <!-- Tabela de Resultados -->
+            <div class="table-responsive">
+                <table>
+                    <caption style="caption-side: bottom; margin-top: 8px; font-weight: 500; color: #6b5563; text-align: center;">
+                        Tabela 1 – Métricas comparativas (MIT-BIH – Teste)
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th>Modelo</th>
+                            <th>Acurácia</th>
+                            <th>Precisão</th>
+                            <th>Sensibilidade</th>
+                            <th>Especificidade</th>
+                            <th>F1-score</th>
+                            <th>AUC-ROC</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="highlight-row">
+                            <td><strong>Random Forest</strong></td>
+                            <td><strong>0,9426</strong></td>
+                            <td><strong>0,5670</strong></td>
+                            <td><strong>0,8058</strong></td>
+                            <td><strong>0,9531</strong></td>
+                            <td><strong>0,6656</strong></td>
+                            <td><strong>0,9649</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Regressão Logística</td>
+                            <td>0,8685</td>
+                            <td>0,3357</td>
+                            <td>0,8733</td>
+                            <td>0,8682</td>
+                            <td>0,4849</td>
+                            <td>0,9270</td>
+                        </tr>
+                        <tr>
+                            <td>MLP (Rede Neural)</td>
+                            <td>0,8965</td>
+                            <td>0,3958</td>
+                            <td>0,8739</td>
+                            <td>0,8982</td>
+                            <td>0,5448</td>
+                            <td>0,9497</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Matriz de Confusão e Features -->
+            <div style="display: flex; flex-wrap: wrap; gap: 30px; margin-top: 25px;">
+                <div style="flex: 1; min-width: 200px; background: #fcf8f9; padding: 20px; border-radius: 12px; border: 1px solid #f0e6ea;">
+                    <h4 style="color: #3d2c36; font-family: 'Playfair Display', serif;"><i class="fas fa-table" style="color:#b57c9c;"></i> Matriz de Confusão (RF)</h4>
+                    <div style="display: grid; grid-template-columns: auto auto; gap: 4px 20px; font-size:0.9rem; margin-top: 10px;">
+                        <span style="font-weight:600;">VP: 1.278</span> <span style="color:#4a3b42;">(Arritmias detectadas)</span>
+                        <span style="font-weight:600;">VN: 19.819</span> <span style="color:#4a3b42;">(Normais corretos)</span>
+                        <span style="font-weight:600; color:#b57c9c;">FP: 976</span> <span style="color:#4a3b42;">(Falsos alertas)</span>
+                        <span style="font-weight:600; color:#b57c9c;">FN: 308</span> <span style="color:#4a3b42;">(Arritmias perdidas)</span>
+                    </div>
+                </div>
+                <div style="flex: 1; min-width: 200px; background: #fcf8f9; padding: 20px; border-radius: 12px; border: 1px solid #f0e6ea;">
+                    <h4 style="color: #3d2c36; font-family: 'Playfair Display', serif;"><i class="fas fa-chart-pie" style="color:#b57c9c;"></i> Importância das Features (RF)</h4>
+                    <ul style="list-style: none; padding-left:0; margin-top: 8px; font-size:0.9rem;">
+                        <li><span style="display:inline-block; width:100px; font-weight:500;">rr_current</span> 36,95%</li>
+                        <li><span style="display:inline-block; width:100px; font-weight:500;">rr_var_rate</span> 26,31%</li>
+                        <li><span style="display:inline-block; width:100px; font-weight:500;">rr_std</span> 13,62%</li>
+                        <li><span style="display:inline-block; width:100px; font-weight:500;">rr_rmssd</span> 11,87%</li>
+                        <li><span style="display:inline-block; width:100px; font-weight:500;">rr_mean</span> 11,25%</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="margin-top: 25px; padding: 15px 20px; background: #f4e9ee; border-radius: 10px;">
+                <p style="margin:0; font-size:0.95rem; color:#3d2c36;">
+                    <i class="fas fa-check-circle" style="color:#9a4d6f;"></i> <strong>Validação Externa (PTB-XL):</strong> 
+                    O Random Forest manteve AUC-ROC de 0,88, porém com queda no F1-score para 0,62, evidenciando desafios de generalização.
+                </p>
+            </div>
+        </section>
+
+        <!-- ============================= -->
+        <!-- SEÇÃO: FASE 3                -->
+        <!-- ============================= -->
+        <section id="fase3">
+            <h2 class="section-title"><i class="fas fa-presentation"></i> Fase 3 · Apresentação & Mensagens-Chave</h2>
+            <div class="section-sub">Síntese da apresentação oral de 7 minutos: conclusões, ética e aplicações.</div>
+
+            <div class="card-grid">
+                <div class="card-elegant">
+                    <h3><i class="fas fa-check-double"></i> 3 Conclusões Fortes</h3>
+                    <ul>
+                        <li>A IA (<strong>Random Forest</strong>) atinge AUC-ROC > 0,95, viabilizando triagem remota de arritmias.</li>
+                        <li>O melhor desempenho é <strong>concentrado na fibrilação atrial</strong> (devido à irregularidade do RR), com limitações para arritmias regulares.</li>
+                        <li>A tecnologia é <strong>complementar</strong> ao médico: não substitui eletrocardiograma ou teste ergométrico.</li>
+                    </ul>
+                </div>
+                <div class="card-elegant">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Desafios Críticos</h3>
+                    <ul>
+                        <li><strong>Artefato de movimento:</strong> durante exercício, a acurácia cai significativamente.</li>
+                        <li><strong>Falsos positivos:</strong> precisão de 57% no RF, podendo gerar ansiedade.</li>
+                        <li><strong>Generalização:</strong> queda de desempenho em bases externas (PTB-XL).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="ethics-box">
+                <h4><i class="fas fa-shield-alt"></i> Questões Éticas e Limites Clínicos</h4>
+                <ul style="list-style: none; padding-left: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px;">
+                    <li><i class="fas fa-users" style="color:#b57c9c; width:20px;"></i> Viés de dados (populações ocidentais)</li>
+                    <li><i class="fas fa-dollar-sign" style="color:#b57c9c; width:20px;"></i> Desigualdade de acesso (SUS)</li>
+                    <li><i class="fas fa-brain" style="color:#b57c9c; width:20px;"></i> Ansiedade por falsos alarmes</li>
+                    <li><i class="fas fa-lock" style="color:#b57c9c; width:20px;"></i> Privacidade e LGPD</li>
+                </ul>
+                <p style="margin-top: 12px; font-weight: 500; color:#5a3b4a;"><i class="fas fa-stethoscope"></i> O sistema é uma ferramenta de <strong>triagem e apoio à decisão</strong>, nunca um diagnóstico autônomo.</p>
+            </div>
+
+            <div style="margin-top: 25px; padding: 20px; background: #ffffff; border-radius: 12px; border: 1px solid #f0e6ea;">
+                <h4 style="color: #3d2c36; font-family: 'Playfair Display', serif;"><i class="fas fa-route" style="color:#b57c9c;"></i> Aplicações no SUS & Reabilitação</h4>
+                <p style="font-size:0.95rem;">Telemonitoramento de pacientes pós-infarto, apoio à adesão ao exercício domiciliar (ZAHNG et al., 2025) e otimização de recursos na atenção primária. O modelo pode ser embarcado em aplicativos de baixo custo.</p>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+                    <span class="metric-badge"><i class="fas fa-running"></i> Retorno gradual</span>
+                    <span class="metric-badge"><i class="fas fa-hospital"></i> Redução de reinternações</span>
+                    <span class="metric-badge"><i class="fas fa-phone-alt"></i> Alerta remoto</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================= -->
+        <!-- SEÇÃO: CÓDIGOS (PREVIEW COLAB) -->
+        <!-- ============================= -->
+        <section id="codigos">
+            <h2 class="section-title"><i class="fas fa-code"></i> Códigos · Prévia no Colab</h2>
+            <div class="section-sub">Implementações completas utilizadas nas Fases 1 e 2. Clique em <strong>"Abrir no Colab"</strong> para executar.</div>
+
+            <!-- CÓDIGO 1 -->
+            <div class="code-section">
+                <div class="code-header">
+                    <span class="title"><i class="fab fa-python"></i> Código 1 · Classificador Base (Random Forest)</span>
+                    <div class="code-actions">
+                        <button onclick="copyCode('code1')"><i class="fas fa-copy"></i> Copiar</button>
+                        <a href="https://colab.research.google.com/drive/EXEMPLO" target="_blank"><i class="fas fa-external-link-alt"></i> Abrir no Colab</a>
+                    </div>
+                </div>
+                <div class="code-body" id="code1">
+                    <pre><code class="language-python"># INSTALAÇÃO DA BIBLIOTECA WFDB (necessária para baixar os dados)
+!pip install wfdb numpy pandas scikit-learn imbalanced-learn matplotlib -q
+
+# IMPORTS
+import wfdb
+import numpy as np
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split, cross_val_score, StratifiedKFold
+from sklearn.metrics import (
+    accuracy_score,
+    recall_score,
+    f1_score,
+    roc_auc_score,
+    confusion_matrix,
+    classification_report
+)
+from imblearn.over_sampling import SMOTE
+import matplotlib.pyplot as plt
+import warnings
+warnings.filterwarnings('ignore')
+
+# FUNÇÃO MANUAL PARA CALCULAR ESPECIFICIDADE
+def specificity_score(y_true, y_pred):
+    tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
+    if (tn + fp) == 0:
+        return 0.0
+    return tn / (tn + fp)
+
+# CONFIGURAÇÃO DOS REGISTROS (TODOS OS 48)
+records = ['100','101','102','103','104','105','106','107','108','109',
+            '111','112','113','114','115','116','117','118','119','121',
+            '122','123','124','200','201','202','203','205','207','208',
+            '209','210','212','213','214','215','217','219','220','221',
+            '222','223','228','230','231','232','233','234']
+
+# Mapeamento de classes: N=normal, F=fibrilação atrial, V=extrassístole ventricular
+ARRHYTHMIA_LABELS = {'F', 'V'}
+
+def extract_features_from_record(record_name):
+    try:
+        record = wfdb.rdrecord(record_name, pn_dir='mitdb')
+        annotation = wfdb.rdann(record_name, 'atr', pn_dir='mitdb')
+    except Exception as e:
+        print(f"Erro ao carregar {record_name}: {e}")
+        return pd.DataFrame()
+
+    samples = annotation.sample
+    symbols = annotation.symbol
+    valid_indices = [i for i, s in enumerate(symbols) if s not in ['~', 'Q', '?']]
+    samples = [samples[i] for i in valid_indices]
+    symbols = [symbols[i] for i in valid_indices]
+    if len(samples) < 5:
+        return pd.DataFrame()
+    rr_intervals = np.diff(samples)
+    rr_ms = rr_intervals / 360.0 * 1000.0
+    features_list = []
+    for i in range(1, len(samples)):
+        rr_current = rr_ms[i-1]
+        start = max(0, i-5)
+        window_rr = rr_ms[start:i]
+        if len(window_rr) < 2:
+            continue
+        rr_mean = np.mean(window_rr)
+        rr_std = np.std(window_rr)
+        rr_rmssd = np.sqrt(np.mean(np.diff(window_rr)**2)) if len(window_rr) > 1 else 0
+        rr_var_rate = (rr_current - rr_mean) / (rr_mean + 1e-6)
+        label = 1 if symbols[i] in ARRHYTHMIA_LABELS else 0
+        features_list.append({
+            'rr_current': rr_current,
+            'rr_mean': rr_mean,
+            'rr_std': rr_std,
+            'rr_rmssd': rr_rmssd,
+            'rr_var_rate': rr_var_rate,
+            'label': label
+        })
+    return pd.DataFrame(features_list)
+
+print("Baixando e processando os registros do MIT-BIH...")
+all_data = []
+for rec in records:
+    print(f"Processando {rec}...")
+    df_rec = extract_features_from_record(rec)
+    if not df_rec.empty:
+        all_data.append(df_rec)
+
+if not all_data:
+    raise ValueError("Nenhum dado foi extraído.")
+
+data = pd.concat(all_data, ignore_index=True)
+print(f"\nTotal de amostras: {len(data)}")
+print("Distribuição original:\n", data['label'].value_counts())</code></pre>
+                </div>
+            </div>
+
+            <!-- CÓDIGO 2 -->
+            <div class="code-section">
+                <div class="code-header">
+                    <span class="title"><i class="fab fa-python"></i> Código 2 · Comparação Completa (RF x RL x MLP)</span>
+                    <div class="code-actions">
+                        <button onclick="copyCode('code2')"><i class="fas fa-copy"></i> Copiar</button>
+                        <a href="https://colab.research.google.com/drive/EXEMPLO2" target="_blank"><i class="fas fa-external-link-alt"></i> Abrir no Colab</a>
+                    </div>
+                </div>
+                <div class="code-body" id="code2">
+                    <pre><code class="language-python"># =============================================================================
+# INSTALAÇÃO DA BIBLIOTECA WFDB
+# =============================================================================
+!pip install wfdb numpy pandas scikit-learn imbalanced-learn matplotlib seaborn -q
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
+import wfdb
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.neural_network import MLPClassifier
+from sklearn.model_selection import train_test_split, cross_val_score, StratifiedKFold
+from sklearn.metrics import (
+    accuracy_score, precision_score, recall_score, f1_score,
+    roc_auc_score, confusion_matrix, classification_report
+)
+from imblearn.over_sampling import SMOTE
+import warnings
+warnings.filterwarnings('ignore')
+
+# =============================================================================
+# 1. CONFIGURAÇÃO DOS REGISTROS (TODOS OS 48)
+# =============================================================================
+records = ['100','101','102','103','104','105','106','107','108','109',
+           '111','112','113','114','115','116','117','118','119','121',
+           '122','123','124','200','201','202','203','205','207','208',
+           '209','210','212','213','214','215','217','219','220','221',
+           '222','223','228','230','231','232','233','234']
+
+ARRHYTHMIA_LABELS = {'F', 'V'}  # Fibrilação Atrial e Extrassístole Ventricular
+
+# =============================================================================
+# 2. FUNÇÃO PARA EXTRAIR FEATURES
+# =============================================================================
+def extract_features_from_record(record_name):
+    try:
+        record = wfdb.rdrecord(record_name, pn_dir='mitdb')
+        annotation = wfdb.rdann(record_name, 'atr', pn_dir='mitdb')
+    except Exception as e:
+        print(f"Erro ao carregar {record_name}: {e}")
+        return pd.DataFrame()
+    
+    samples = annotation.sample
+    symbols = annotation.symbol
+    valid_indices = [i for i, s in enumerate(symbols) if s not in ['~', 'Q', '?']]
+    samples = [samples[i] for i in valid_indices]
+    symbols = [symbols[i] for i in valid_indices]
+    if len(samples) < 5:
+        return pd.DataFrame()
+    rr_intervals = np.diff(samples)
+    rr_ms = rr_intervals / 360.0 * 1000.0
+    features_list = []
+    for i in range(1, len(samples)):
+        rr_current = rr_ms[i-1]
+        start = max(0, i-5)
+        window_rr = rr_ms[start:i]
+        if len(window_rr) < 2:
+            continue
+        rr_mean = np.mean(window_rr)
+        rr_std = np.std(window_rr)
+        rr_rmssd = np.sqrt(np.mean(np.diff(window_rr)**2)) if len(window_rr) > 1 else 0
+        rr_var_rate = (rr_current - rr_mean) / (rr_mean + 1e-6)
+        label = 1 if symbols[i] in ARRHYTHMIA_LABELS else 0
+        features_list.append({
+            'rr_current': rr_current,
+            'rr_mean': rr_mean,
+            'rr_std': rr_std,
+            'rr_rmssd': rr_rmssd,
+            'rr_var_rate': rr_var_rate,
+            'label': label
+        })
+    return pd.DataFrame(features_list)
+
+print("Baixando e processando os 48 registros...")
+all_data = []
+for rec in records:
+    print(f"Processando {rec}...")
+    df_rec = extract_features_from_record(rec)
+    if not df_rec.empty:
+        all_data.append(df_rec)
+
+if not all_data:
+    raise ValueError("Nenhum dado foi extraído.")
+
+data = pd.concat(all_data, ignore_index=True)
+print(f"\nTotal de amostras: {len(data)}")
+
+# =============================================================================
+# 3. PRÉ-PROCESSAMENTO E BALANCEAMENTO
+# =============================================================================
+X = data.drop('label', axis=1)
+y = data['label']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+smote = SMOTE(random_state=42)
+X_train_res, y_train_res = smote.fit_resample(X_train, y_train)
+print(f"Após SMOTE (treino): {np.bincount(y_train_res)}")
+
+# =============================================================================
+# 4. TREINAMENTO E AVALIAÇÃO DOS 3 MODELOS
+# =============================================================================
+models = {
+    'Random Forest': RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=-1, class_weight='balanced'),
+    'Regressão Logística': LogisticRegression(random_state=42, max_iter=1000, class_weight='balanced'),
+    'MLP (Rede Neural)': MLPClassifier(hidden_layer_sizes=(100,), activation='relu', solver='adam',
+                                       max_iter=500, random_state=42, early_stopping=True)
+}
+
+results = []
+feature_importance = None
+
+for name, model in models.items():
+    print(f"\n--- Treinando {name} ---")
+    model.fit(X_train_res, y_train_res)
+    y_pred = model.predict(X_test)
+    y_proba = model.predict_proba(X_test)[:, 1] if hasattr(model, "predict_proba") else None
+    
+    acc = accuracy_score(y_test, y_pred)
+    prec = precision_score(y_test, y_pred)
+    rec = recall_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred)
+    auc = roc_auc_score(y_test, y_proba) if y_proba is not None else None
+    
+    tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
+    spec = tn / (tn + fp) if (tn + fp) > 0 else 0
+    
+    results.append({
+        'Modelo': name,
+        'Acurácia': acc,
+        'Precisão': prec,
+        'Sensibilidade': rec,
+        'Especificidade': spec,
+        'F1-score': f1,
+        'AUC-ROC': auc
+    })
+    
+    if name == 'Random Forest':
+        feature_importance = model.feature_importances_
+
+# =============================================================================
+# 5. EXIBIÇÃO DA TABELA COMPARATIVA
+# =============================================================================
+df_results = pd.DataFrame(results)
+print("\n" + "="*80)
+print("COMPARAÇÃO DE DESEMPENHO DOS MODELOS (Teste - MIT-BIH)")
+print("="*80)
+print(df_results.to_string(index=False, float_format=lambda x: f"{x:.4f}"))
+
+# =============================================================================
+# 6. GRÁFICOS (Barras, Importância de Features, Matriz de Confusão)
+# =============================================================================
+# (O código completo inclui as visualizações descritas no artigo)
+print("\n--- Fim da execução ---")</code></pre>
+                </div>
+            </div>
+
+            <p style="font-size:0.85rem; color:#6b5563; text-align:center; margin-top: 10px;">
+                <i class="fas fa-info-circle"></i> Os links "Abrir no Colab" são ilustrativos. Substitua pelo link do seu próprio notebook após hospedar no GitHub.
+            </p>
+        </section>
+
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <p><i class="fas fa-heart" style="color:#b57c9c;"></i> Giovanna Silva · CEFET-MG · 2026</p>
+            <p style="font-size:0.8rem; margin-top:4px;">Trabalho de conclusão da disciplina Introdução à Inteligência Artificial</p>
+        </div>
+    </footer>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script>
+        // Inicializa o highlight.js para colorir os códigos
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre code').forEach((el) => {
+                hljs.highlightElement(el);
+            });
+        });
+
+        // Função para copiar código
+        function copyCode(elementId) {
+            const codeElement = document.getElementById(elementId);
+            const codeText = codeElement.innerText;
+            navigator.clipboard.writeText(codeText).then(() => {
+                alert('Código copiado para a área de transferência!');
+            }).catch(err => {
+                // Fallback
+                const textArea = document.createElement('textarea');
+                textArea.value = codeText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('Código copiado!');
+            });
+        }
+
+        // Smooth scroll para os links da navbar
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
